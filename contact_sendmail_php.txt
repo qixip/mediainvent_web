@@ -1,0 +1,54 @@
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['ok' => false, 'error' => 'Method not allowed']);
+    exit;
+}
+
+// Get form data
+$name = isset($_POST['name']) ? trim($_POST['name']) : '';
+$email = isset($_POST['email']) ? trim($_POST['email']) : '';
+$message = isset($_POST['message']) ? trim($_POST['message']) : '';
+
+// Validate required fields
+if (empty($name) || empty($email) || empty($message)) {
+    echo json_encode(['ok' => false, 'error' => 'All fields are required']);
+    exit;
+}
+
+// Validate email
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['ok' => false, 'error' => 'Invalid email address']);
+    exit;
+}
+
+// Your email settings - CHANGE THESE
+$to = 'your-email@yourdomain.com';  // Change to your email
+$subject = 'Contact Form Submission from ' . $name;
+$headers = array(
+    'From' => 'noreply@yourdomain.com',  // Change to your domain
+    'Reply-To' => $email,
+    'Content-Type' => 'text/html; charset=UTF-8'
+);
+
+// Email body
+$body = "
+<h2>New Contact Form Submission</h2>
+<p><strong>Name:</strong> " . htmlspecialchars($name) . "</p>
+<p><strong>Email:</strong> " . htmlspecialchars($email) . "</p>
+<p><strong>Message:</strong></p>
+<p>" . nl2br(htmlspecialchars($message)) . "</p>
+";
+
+// Send email
+if (mail($to, $subject, $body, $headers)) {
+    echo json_encode(['ok' => true]);
+} else {
+    echo json_encode(['ok' => false, 'error' => 'Failed to send email']);
+}
+?>

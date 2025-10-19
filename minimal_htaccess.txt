@@ -1,0 +1,6 @@
+# Minimal .htaccess for Next.js static export
+RewriteEngine On
+RewriteRule ^_next/ - [L]
+AddType text/css .css
+AddType application/javascript .js
+AddType font/opentype .otf

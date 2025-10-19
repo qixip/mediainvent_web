@@ -1,0 +1,13 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  output: "export",
+  images: { unoptimized: true },
+  trailingSlash: true,
+  assetPrefix: "",
+  basePath: "",
+  // Alternative: Use different directory name instead of _next
+  // distDir: "assets",
+};
+
+export default nextConfig;
